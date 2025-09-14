@@ -12,6 +12,12 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
 
 class ProductResource extends Resource
 {
@@ -23,9 +29,23 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')->required(),
-                Forms\Components\TextInput::make('description')->required(),
-           
+                TextInput::make('name')
+                    ->required()
+                    ->maxLength(255),
+                RichEditor::make('description')
+                    ->nullable(),
+                TextInput::make('price')
+                    ->numeric()
+                    ->prefix('$')
+                    ->required(),
+                FileUpload::make('image')
+                    ->image()
+                    ->directory('product-images')
+                    ->nullable(),
+                Select::make('categories')
+                    ->multiple()
+                    ->relationship('categories', 'name')
+                    ->nullable(),
             ]);
     }
 
@@ -33,10 +53,12 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')->sortable(),
-        Tables\Columns\TextColumn::make('name')->searchable(),
-        Tables\Columns\TextColumn::make('created_at')->dateTime(),
-            
+                TextColumn::make('id')->sortable(),
+                TextColumn::make('name')->searchable(),
+                TextColumn::make('created_at')->dateTime(),
+                ImageColumn::make('image'),
+                TextColumn::make('price')->money('usd')->sortable(),
+                TextColumn::make('categories.name')->badge(),
             ])
             ->filters([
                 //
