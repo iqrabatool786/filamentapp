@@ -42,10 +42,12 @@ class ProductResource extends Resource
                     ->image()
                     ->directory('product-images')
                     ->nullable(),
-                Select::make('categories')
+                    Select::make('categories')
+                    ->label('Categories')
                     ->multiple()
-                    ->relationship('categories', 'name')
-                    ->nullable(),
+                    ->relationship('categories', 'name') 
+                    ->preload() 
+                    ->searchable(),
             ]);
     }
 
@@ -65,6 +67,7 @@ class ProductResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

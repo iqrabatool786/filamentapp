@@ -31,4 +31,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/admin/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::patch('/admin/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
+    Route::get('/contact', [ContactController::class, 'show'])->name('contact.show');
+Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
 });
