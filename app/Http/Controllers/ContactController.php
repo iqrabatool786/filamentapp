@@ -34,6 +34,6 @@ try{
     }catch (\Exception $e){
         dd($e);
     }
-        return redirect()->back()->with('success', 'Message sent successfully!');
+        return redirect(ContactMessageResource::getUrl('index'))->with('success', 'Message sent successfully!');
     }
 }
