@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Select;
 
-
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
@@ -24,21 +23,21 @@ class UserResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-        ->schema([
-            Forms\Components\TextInput::make('name')->required(),
-            Forms\Components\TextInput::make('email')->email()->required(),
-            Forms\Components\TextInput::make('password')
-                ->password()
-                ->dehydrateStateUsing(fn ($state) => bcrypt($state))
-                ->required(fn (string $context): bool => $context === 'create'),
-    
-            Select::make('roles')
-                ->multiple()
-                ->relationship('roles', 'name')
-                ->preload()
-                ->searchable(),
-        ]);
-    
+            ->schema([
+                Forms\Components\TextInput::make('name')->required(),
+                Forms\Components\TextInput::make('email')->email()->required(),
+                Forms\Components\TextInput::make('password')
+                    ->password()
+                    ->dehydrateStateUsing(fn ($state) => bcrypt($state))
+                    ->required(fn (string $context): bool => $context === 'create'),
+                Select::make('roles')
+                    ->multiple()
+                    ->relationship('roles', 'name')
+                    ->preload()
+                    ->searchable()
+                    ->required()
+                    ->minItems(1),
+            ]);
     }
 
     public static function table(Table $table): Table
@@ -49,9 +48,9 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('name')->searchable(),
                 Tables\Columns\TextColumn::make('email')->searchable(),
                 Tables\Columns\TextColumn::make('roles.name')
-                ->label('Roles')
-                ->badge() 
-                ->searchable(),
+                    ->label('Roles')
+                    ->badge()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')->dateTime(),
             ])
             ->filters([
